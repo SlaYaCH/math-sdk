@@ -138,7 +138,7 @@ def get_etl_cvar_p5k_10k_vales(dist: dict, bet_cost: float, total_weight=None) -
             etl40 += win * (weight / total_weight)
     cvar = conditional_value_at_risk(0.999, dist, total_weight)
 
-    return p5k, p10k, etl10k, etl40, cvar
+    return p5k, p10k, etl10k, etl40, cvar / bet_cost
 
 
 def get_maxwin_hitrate(dist: dict, total_weight=None) -> float:
