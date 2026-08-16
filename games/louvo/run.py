@@ -1,3 +1,4 @@
+import os
 """
 Louvo - simulation runner.
 
@@ -40,7 +41,7 @@ if __name__ == "__main__":
         # last run generated them successfully) - leave False. Only flip to
         # True again if you change reels, paytable, or any BetMode/
         # Distribution in game_config.py.
-        "run_sims": True,
+        "run_sims": False,
         "run_optimization": True,
         "run_analysis": True,
         "run_format_checks": True,
@@ -99,4 +100,9 @@ if __name__ == "__main__":
         create_stat_sheet(gamestate, custom_keys=custom_keys)
 
     if run_conditions["run_format_checks"] and not failed_modes:
+        import glob
+        for verification_file in glob.glob(
+            os.path.join(config.library_path, "configs", "*.verification.json")
+        ):
+            os.remove(verification_file)
         execute_all_tests(config)

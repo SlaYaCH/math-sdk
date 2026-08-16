@@ -17,6 +17,8 @@ from - this is a game-specific attribute we maintain ourselves, not part of
 the base engine.
 """
 
+import random
+
 from game_executables import GameExecutables
 from src.calculations.statistics import get_random_outcome
 
@@ -33,13 +35,23 @@ class GameStateOverride(GameExecutables):
         """
         MATCH symbol: two "duelists" are drawn (Boyfriend Material vs Red
         Flag), each with a random multiplier from the ladder. The higher
-        value "wins the duel" and is the multiplier applied to the reel.
+        value doesn't automatically win - the winner is picked with a fair
+        coin flip, so either the bigger or the smaller value can end up as
+        the multiplier applied to the reel.
         """
         tier = getattr(self, "tier", "basegame")
         ladder = self.config.duel_multiplier_values[tier]
         contender_a = get_random_outcome(ladder)
         contender_b = get_random_outcome(ladder)
-        symbol.multiplier = max(contender_a, contender_b)
+        symbol.multiplier = contender_a if random.random() < 0.5 else contender_b
+
+        # Frontend needs both duel values (not just the winner) to animate
+        # the actual duel - Symbol only accepts a fixed attribute set (see
+        # note below on pending_likes), so stash on self.pending_duels
+        # (keyed by symbol id), same pattern as self.pending_likes.
+        if not hasattr(self, "pending_duels"):
+            self.pending_duels = {}
+        self.pending_duels[id(symbol)] = (contender_a, contender_b)
 
     def assign_superlike_likes(self, symbol) -> None:
         """

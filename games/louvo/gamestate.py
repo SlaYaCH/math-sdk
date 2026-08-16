@@ -37,6 +37,7 @@ class GameState(GameStateOverride):
             self.match_streak_unlocks = 0
             self.pending_match_streaks = []
             self.pending_likes = {}
+            self.pending_duels = {}
             self.global_multiplier = 1
 
             self.draw_board(emit_event=False)
@@ -85,6 +86,7 @@ class GameState(GameStateOverride):
         self.match_streak_unlocks = 0
         self.pending_match_streaks = []
         self.pending_likes = {}
+        self.pending_duels = {}
 
         while self.fs < self.tot_fs and not self.wincap_triggered:
             self.update_freespin()

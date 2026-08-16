@@ -79,30 +79,23 @@ class GameCalculations(Executables):
 
         expanded_reels = []
 
+        pending_duels = getattr(self, "pending_duels", {})
+
         for reel_index, symbol in match_hits:
             multiplier = symbol.multiplier
+            contender_a, contender_b = pending_duels.pop(id(symbol), (multiplier, multiplier))
             self.book.add_event({
                 "index": len(self.book.events),
                 "type": "matchDuelReveal",
                 "reelIndex": reel_index,
                 "multiplier": multiplier,
+                "duelValues": [contender_a, contender_b],
             })
             self._expand_reel_to_wild(reel_index, multiplier)
             expanded_reels.append(reel_index)
 
-        pending = getattr(self, "pending_likes", {})
-        likes_preview = {id(sym): pending.get(id(sym), 0) for _, sym in superlike_hits}
-
         for reel_index, symbol in superlike_hits:
-            multiplier = symbol.multiplier
-            self.book.add_event({
-                "index": len(self.book.events),
-                "type": "superlikeReveal",
-                "reelIndex": reel_index,
-                "multiplier": multiplier,
-                "likes": likes_preview[id(symbol)],
-            })
-            self._expand_reel_to_wild(reel_index, multiplier)
+            self._expand_reel_to_wild(reel_index, symbol.multiplier)
             expanded_reels.append(reel_index)
 
         occupied = set()
@@ -113,23 +106,31 @@ class GameCalculations(Executables):
         # Likes-received counts were stashed on self.pending_likes (keyed by
         # symbol id) when the SUPER LIKE symbol was created - see
         # game_override.py.
+        pending = getattr(self, "pending_likes", {})
         superlike_likes = {id(sym): pending.pop(id(sym), 0) for _, sym in superlike_hits}
 
         for reel_index, symbol in superlike_hits:
             likes = superlike_likes[id(symbol)]
             multiplier = symbol.multiplier
-            self._fire_likes(likes, multiplier, occupied)
+            fired_positions = self._fire_likes(likes, multiplier, occupied)
+            if getattr(self, "tier", "basegame") == "after_dark" and likes == 6:
+                self._queue_match_streak_unlock()
+            self.book.add_event({
+                "index": len(self.book.events),
+                "type": "superlikeReveal",
+                "reelIndex": reel_index,
+                "multiplier": multiplier,
+                "likes": likes,
+                "likePositions": fired_positions,
+                "streakTier": getattr(self, "match_streak_unlocks", 0),
+            })
 
-        if getattr(self, "tier", "basegame") == "after_dark":
-            for _, symbol in superlike_hits:
-                if superlike_likes[id(symbol)] == 6:
-                    self._queue_match_streak_unlock()
 
     def _expand_reel_to_wild(self, reel_index: int, multiplier) -> None:
         for row_index in range(self.config.num_rows[reel_index]):
             self._replace_symbol(reel_index, row_index, "W", multiplier=multiplier)
 
-    def _fire_likes(self, likes: int, multiplier, occupied: set) -> None:
+    def _fire_likes(self, likes: int, multiplier, occupied: set) -> list:
         candidates = [
             (r, row)
             for r in range(self.config.num_reels)
@@ -137,9 +138,12 @@ class GameCalculations(Executables):
             if (r, row) not in occupied
         ]
         random.shuffle(candidates)
+        fired_positions = []
         for reel_index, row_index in candidates[:likes]:
             self._replace_symbol(reel_index, row_index, "W", multiplier=multiplier)
             occupied.add((reel_index, row_index))
+            fired_positions.append({"reelIndex": reel_index, "rowIndex": row_index})
+        return fired_positions
 
     def _replace_symbol(self, reel_index: int, row_index: int, name: str, multiplier=None) -> None:
         new_symbol = self.create_symbol(name)
