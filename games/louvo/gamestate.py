@@ -35,6 +35,7 @@ class GameState(GameStateOverride):
             self.reset_book()
             self.tier = "basegame"
             self.match_streak_unlocks = 0
+            self.streak_hearts = 0
             self.pending_match_streaks = []
             self.pending_likes = {}
             self.pending_duels = {}
@@ -84,6 +85,7 @@ class GameState(GameStateOverride):
             self.tier = "after_dark" if scatters_seen >= 4 else "speed_dating"
 
         self.match_streak_unlocks = 0
+        self.streak_hearts = 0
         self.pending_match_streaks = []
         self.pending_likes = {}
         self.pending_duels = {}

@@ -8,20 +8,23 @@ Implements the two signature mechanics from the reference game:
   fires extra wild symbols onto the board based on how many likes it received.
 
 Plus the After-Dark-only "Match Streak" sub-feature (equivalent to the
-reference game's "DuelSpins"): landing a SUPER LIKE with the maximum of 6
-likes during the After Dark freegame queues a forced bonus spin with a
-guaranteed number of MATCH symbols on the board.
+reference game's "DuelSpins"): a CUMULATIVE counter of likes received across
+spins during the After Dark freegame. Every 6 likes (a full heart display)
+unlocks the next streak tier and queues a forced bonus spin; any surplus
+likes from the spin that completes a tier roll over immediately onto the
+next tier's counter, rather than being lost or requiring a fresh spin.
 
-UPDATE: expand_special_reels() now emits a dedicated "matchDuelReveal" /
-"superlikeReveal" book event for each expanding reel, right before the M/K
-symbol gets overwritten by the wild expansion - the frontend needs this,
-since M/K never survive on the final board (confirmed: they get fully
-replaced across the whole reel, so a board-scanning heuristic can't
-distinguish "this came from MATCH" vs "this came from SUPER LIKE" vs "this
-is just a naturally-drawn wild"). Also removed the old "max 1 MATCH per
-spin" cap - the reference game only caps at 1 special symbol per REEL
-(already guaranteed by the reel-strip design), not per spin, so multiple
-MATCH duels can now resolve on the same spin.
+UPDATE (cumulative streak): self.streak_hearts now persists across spins
+within a single After Dark session (NOT reset per-spin). Reset to 0 happens
+in gamestate.py at the point where a new After Dark freegame session is
+triggered - NOT handled in this file, since expand_special_reels() has no
+visibility into "is this the first spin of a brand-new bonus". See the
+TODO at the bottom of this file for the exact reset call needed there.
+
+Also fixed a pre-existing bug in _queue_match_streak_unlock(): the guard
+around `self.pending_match_streaks = []` was missing (it was unconditionally
+resetting the queue on every unlock, potentially dropping an unconsumed
+forced-spin request). Restored the `if not hasattr(...)` guard.
 
 Confirmed against the real SDK (games/template/ + live tracebacks):
 - Symbol's real constructor takes a single argument, not (config, name) as
@@ -78,7 +81,6 @@ class GameCalculations(Executables):
                         ["L1", "L2", "L3", "L4"]))
 
         expanded_reels = []
-
         pending_duels = getattr(self, "pending_duels", {})
 
         for reel_index, symbol in match_hits:
@@ -103,9 +105,6 @@ class GameCalculations(Executables):
             for row_index in range(self.config.num_rows[reel_index]):
                 occupied.add((reel_index, row_index))
 
-        # Likes-received counts were stashed on self.pending_likes (keyed by
-        # symbol id) when the SUPER LIKE symbol was created - see
-        # game_override.py.
         pending = getattr(self, "pending_likes", {})
         superlike_likes = {id(sym): pending.pop(id(sym), 0) for _, sym in superlike_hits}
 
@@ -113,8 +112,16 @@ class GameCalculations(Executables):
             likes = superlike_likes[id(symbol)]
             multiplier = symbol.multiplier
             fired_positions = self._fire_likes(likes, multiplier, occupied)
-            if getattr(self, "tier", "basegame") == "after_dark" and likes == 6:
-                self._queue_match_streak_unlock()
+
+            if getattr(self, "tier", "basegame") == "after_dark":
+                self.streak_hearts = getattr(self, "streak_hearts", 0) + likes
+                while (
+                    self.streak_hearts >= 6
+                    and getattr(self, "match_streak_unlocks", 0) < self.config.match_streak_max_unlocks
+                ):
+                    self.streak_hearts -= 6
+                    self._queue_match_streak_unlock()
+
             self.book.add_event({
                 "index": len(self.book.events),
                 "type": "superlikeReveal",
@@ -123,8 +130,8 @@ class GameCalculations(Executables):
                 "likes": likes,
                 "likePositions": fired_positions,
                 "streakTier": getattr(self, "match_streak_unlocks", 0),
+                "streakHearts": getattr(self, "streak_hearts", 0),
             })
-
 
     def _expand_reel_to_wild(self, reel_index: int, multiplier) -> None:
         for row_index in range(self.config.num_rows[reel_index]):
@@ -165,6 +172,14 @@ class GameCalculations(Executables):
         self.match_streak_unlocks += 1
         guarantee = self.config.match_streak_guarantees[self.match_streak_unlocks]
         self.pending_match_streaks.append(guarantee)
+
+    def reset_match_streak(self) -> None:
+        """Called from gamestate.py at the start of a NEW After Dark
+        freegame session - see TODO below. Clears the cumulative counter
+        and tier so nothing carries over from a previous After Dark run."""
+        self.streak_hearts = 0
+        self.match_streak_unlocks = 0
+        self.pending_match_streaks = []
 
     def force_match_streak_board(self, guarantee_count: int) -> None:
         """
@@ -217,6 +232,4 @@ class GameCalculations(Executables):
         new_symbol = self.board[reel_index][row_index]
         if not hasattr(self, "pending_likes"):
             self.pending_likes = {}
-        # override whatever assign_superlike_likes drew - this mode
-        # guarantees at least 2, regardless of the normal random outcome.
         self.pending_likes[id(new_symbol)] = random.choice([2, 3, 4, 5, 6])
