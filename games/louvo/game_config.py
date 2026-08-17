@@ -385,7 +385,7 @@ class GameConfig(Config):
                     ),
                     Distribution(
                         criteria="0",
-                        quota=0.15,
+                        quota=0.02,
                         win_criteria=0.0,
                         conditions={
                             "reel_weights": {self.basegame_type: {"BR0": 1}},
@@ -396,7 +396,7 @@ class GameConfig(Config):
                     ),
                     Distribution(
                         criteria="basegame",
-                        quota=0.8495,
+                        quota=0.9295,
                         conditions={
                             "reel_weights": {self.basegame_type: {"BR0": 1}},
                             "scatter_triggers": {0: 1},

@@ -61,17 +61,25 @@ class GameCalculations(Executables):
         match_hits = []       # [(reel_index, symbol)]
         superlike_hits = []   # [(reel_index, symbol)]
 
+        after_first_tier = (
+            getattr(self, "tier", "basegame") == "after_dark"
+            and getattr(self, "match_streak_unlocks", 0) >= 1
+        )
         for reel_index, column in enumerate(self.board):
-            for symbol in column:
+            for row_index, symbol in enumerate(column):
                 if symbol.name == "M":
                     match_hits.append((reel_index, symbol))
                 elif symbol.name == "K":
+                    if after_first_tier and random.random() < 0.5:
+                        self._replace_symbol(reel_index, row_index, random.choice(
+                            ["L1", "L2", "L3", "L4"]))
+                        continue
                     superlike_hits.append((reel_index, symbol))
 
         if match_hits and superlike_hits:
             match_hits = []  # SUPER LIKE takes priority; MATCH downgraded below
 
-        superlike_hits = superlike_hits[:2]
+        superlike_hits = superlike_hits[:1]
 
         kept = {id(s) for _, s in match_hits + superlike_hits}
         for reel_index, column in enumerate(self.board):
@@ -111,7 +119,7 @@ class GameCalculations(Executables):
         for reel_index, symbol in superlike_hits:
             likes = superlike_likes[id(symbol)]
             multiplier = symbol.multiplier
-            fired_positions = self._fire_likes(likes, multiplier, occupied)
+            fired_positions = self._fire_likes(likes, None, occupied)
 
             if getattr(self, "tier", "basegame") == "after_dark":
                 self.streak_hearts = getattr(self, "streak_hearts", 0) + likes
@@ -217,6 +225,7 @@ class GameCalculations(Executables):
     def force_match_frenzy_board(self) -> None:
         """Match Frenzy: guarantee at least 2 MATCH symbols this spin."""
         self.strip_scatters()
+        is_wincap_attempt = getattr(self, "criteria", "") == "wincap"
         reel_indices = list(range(self.config.num_reels))
         random.shuffle(reel_indices)
         for reel_index in reel_indices[:2]:
@@ -226,6 +235,7 @@ class GameCalculations(Executables):
     def force_like_storm_board(self) -> None:
         """Like Storm: guarantee 1 SUPER LIKE symbol with at least 2 likes."""
         self.strip_scatters()
+        is_wincap_attempt = getattr(self, "criteria", "") == "wincap"
         reel_index = random.randrange(self.config.num_reels)
         row_index = random.randrange(self.config.num_rows[reel_index])
         self._replace_symbol(reel_index, row_index, "K")
@@ -233,3 +243,11 @@ class GameCalculations(Executables):
         if not hasattr(self, "pending_likes"):
             self.pending_likes = {}
         self.pending_likes[id(new_symbol)] = random.choice([2, 3, 4, 5, 6])
+
+        if is_wincap_attempt:
+            new_symbol.multiplier = 200
+            for r in range(self.config.num_reels):
+                if r == reel_index:
+                    continue
+                for row in range(self.config.num_rows[r]):
+                    self._replace_symbol(r, row, "H1")
