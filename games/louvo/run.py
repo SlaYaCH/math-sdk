@@ -41,7 +41,7 @@ if __name__ == "__main__":
         # last run generated them successfully) - leave False. Only flip to
         # True again if you change reels, paytable, or any BetMode/
         # Distribution in game_config.py.
-        "run_sims": True,
+        "run_sims": False,
         "run_optimization": True,
         "run_analysis": True,
         "run_format_checks": True,
