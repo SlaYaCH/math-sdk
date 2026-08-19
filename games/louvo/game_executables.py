@@ -1,19 +1,22 @@
 """
 Louvo - game-specific executable overrides.
 
-Most of the reusable spin logic (drawing boards, emitting line-win events,
-handling free-spin triggers) is inherited transitively through
-GameCalculations -> Executables. This file is where you'd override any of
-those default behaviours if Louvo needed something different from the
-standard flow - for now it's a thin placeholder.
-
-NOTE: inherits GameCalculations (not Executables directly) - this matches
-the single-inheritance chain used throughout the real SDK: Executables ->
-GameCalculations -> GameExecutables -> GameStateOverride -> GameState.
+Un seul override : update_fs_retrigger_amt(). Le moteur partage
+(src/executables + src/events/events.py) ajoute les tours a tot_fs ET
+emet un event 'freeSpinRetrigger' que le frontend Louvo ne connait pas
+("Missing bookEventHandler"). On garde le calcul du moteur mais on purge
+cet event du book : le compteur de tours du frontend se met a jour via
+l'event 'updateFreeSpin' standard emis au debut du tour suivant.
 """
 
 from game_calculations import GameCalculations
 
 
 class GameExecutables(GameCalculations):
-    pass
+    def update_fs_retrigger_amt(self):
+        super().update_fs_retrigger_amt()
+        events = self.book.events
+        events[:] = [e for e in events if e.get("type") != "freeSpinRetrigger"]
+        for i, e in enumerate(events):
+            if "index" in e:
+                e["index"] = i

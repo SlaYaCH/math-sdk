@@ -200,6 +200,10 @@ class GameCalculations(Executables):
         so these actually expand into wild reels (each with its own
         matchDuelReveal event now).
         """
+        # Tour de Match Streak : 100% MATCH, rien d'autre de special (ni
+        # SUPER LIKE - qui annulerait les MATCH via la regle de priorite
+        # dans expand_special_reels - ni scatter).
+        self.strip_symbols(("S", "K"))
         reel_indices = list(range(self.config.num_reels))
         random.shuffle(reel_indices)
         chosen_reels = reel_indices[:min(guarantee_count, self.config.num_reels)]
@@ -212,6 +216,19 @@ class GameCalculations(Executables):
     # in these modes guarantees a specific special symbol, and scatters must
     # never appear (these modes stay in base spins only).
     # ------------------------------------------------------------------
+    def strip_symbols(self, names) -> None:
+        """Remplace tout symbole dont le nom est dans `names` par un symbole
+        bas aleatoire. Utilise par les modes 'garantie' (match_frenzy /
+        like_storm) pour qu'un symbole special tire NATURELLEMENT ne vienne
+        pas parasiter la garantie - notamment un K naturel qui, via la regle
+        'SUPER LIKE prioritaire sur MATCH' de expand_special_reels(),
+        annulait silencieusement les 2 MATCH garantis de match_frenzy."""
+        for reel_index, column in enumerate(self.board):
+            for row_index, symbol in enumerate(column):
+                if symbol.name in names:
+                    self._replace_symbol(reel_index, row_index, random.choice(
+                        ["L1", "L2", "L3", "L4"]))
+
     def strip_scatters(self) -> None:
         """Replace any naturally-drawn scatter with a random low symbol -
         used in FeatureSpins modes where the free-spin trigger must not
@@ -223,8 +240,10 @@ class GameCalculations(Executables):
                         ["L1", "L2", "L3", "L4"]))
 
     def force_match_frenzy_board(self) -> None:
-        """Match Frenzy: guarantee at least 2 MATCH symbols this spin."""
-        self.strip_scatters()
+        """Match Frenzy: guarantee at least 2 MATCH symbols this spin.
+        Rien d'autre de special ne doit apparaitre : ni scatter (DATE), ni
+        SUPER LIKE (qui annulerait les MATCH garantis)."""
+        self.strip_symbols(("S", "K"))
         is_wincap_attempt = getattr(self, "criteria", "") == "wincap"
         reel_indices = list(range(self.config.num_reels))
         random.shuffle(reel_indices)
@@ -233,8 +252,10 @@ class GameCalculations(Executables):
             self._replace_symbol(reel_index, row_index, "M")
 
     def force_like_storm_board(self) -> None:
-        """Like Storm: guarantee 1 SUPER LIKE symbol with at least 2 likes."""
-        self.strip_scatters()
+        """Like Storm: guarantee 1 SUPER LIKE symbol with at least 2 likes.
+        Rien d'autre de special ne doit apparaitre : ni scatter (DATE), ni
+        MATCH."""
+        self.strip_symbols(("S", "M"))
         is_wincap_attempt = getattr(self, "criteria", "") == "wincap"
         reel_index = random.randrange(self.config.num_reels)
         row_index = random.randrange(self.config.num_rows[reel_index])

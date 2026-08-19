@@ -91,8 +91,8 @@ class GameConfig(Config):
         # Dark" tier (10 FS). Both start with 10 spins; which tier is active
         # is decided from the scatter count in gamestate.py, since the two
         # tiers use different reel-sets and different bonus logic.
-        # Retrigger during the bonus only has two designed tiers: 2 extra
-        # scatters = +2 spins, 3 extra = +4 spins - nothing beyond that is
+        # Retrigger during the bonus: Speed Dating only, 3+ extra
+        # scatters = +5 spins. After Dark has NO retrigger at all - nothing else is
         # defined, so 4+ stays capped at the same +4 as the top tier rather
         # than inventing an escalating +6/+8/etc.
         # NOTE: a single reel can show 2 "S" symbols within its 5-row
@@ -102,7 +102,7 @@ class GameConfig(Config):
         # it just resolves as equivalent to the top designed tier.
         self.freespin_triggers = {
             self.basegame_type: {3: 10, **{n: 10 for n in range(4, 11)}},
-            self.freegame_type: {2: 2, 3: 4, **{n: 4 for n in range(4, 11)}},
+            self.freegame_type: {n: 5 for n in range(3, 11)},  # 3+ DATE = +5 (Speed Dating uniquement), cas 2 DATE supprime
         }
 
         # --- paylines -------------------------------------------------------

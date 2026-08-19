@@ -84,6 +84,15 @@ class GameState(GameStateOverride):
             scatters_seen = self.count_special_symbols("scatter")
             self.tier = "after_dark" if scatters_seen >= 4 else "speed_dating"
 
+        # Louvo : freeSpinTrigger/freeSpinRetrigger (src/events/events.py,
+        # partage entre tous les jeux) est ajoute AVANT que self.tier ne soit
+        # calcule ici - on complete retroactivement le dernier evenement
+        # correspondant deja present dans le book avec le vrai palier.
+        for event in reversed(self.book.events):
+            if event.get("type") in ("freeSpinTrigger", "freeSpinRetrigger"):
+                event["tier"] = self.tier
+                break
+
         self.match_streak_unlocks = 0
         self.streak_hearts = 0
         self.pending_match_streaks = []
@@ -94,6 +103,10 @@ class GameState(GameStateOverride):
             self.update_freespin()
 
             self.draw_board(emit_event=False)
+            # After Dark : le symbole DATE ne doit JAMAIS apparaitre - la
+            # seule extension possible est le passage d'un palier de streak.
+            if self.tier == "after_dark":
+                self.strip_scatters()
             self.expand_special_reels()
             reveal_event(self)
 
@@ -102,7 +115,9 @@ class GameState(GameStateOverride):
             self.win_manager.update_spinwin(self.win_data["totalWin"])
             Lines.emit_linewin_events(self)
 
-            if self.check_fs_condition():
+            # Retrigger : Speed Dating uniquement, After Dark n'en a AUCUN
+            # (ses scatters sont de toute facon strippes plus haut).
+            if self.tier == "speed_dating" and self.check_fs_condition():
                 self.update_fs_retrigger_amt()
 
             # After Dark only: resolve any Match Streak (DuelSpin-equivalent)

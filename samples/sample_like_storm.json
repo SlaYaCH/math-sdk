@@ -1,0 +1,343 @@
+{
+  "id": 0,
+  "payoutMultiplier": 7200,
+  "events": [
+    {
+      "index": 0,
+      "type": "reveal",
+      "board": [
+        [
+          {
+            "name": "H6"
+          },
+          {
+            "name": "L1"
+          },
+          {
+            "name": "L2"
+          },
+          {
+            "name": "W",
+            "wild": true,
+            "multiplier": 2
+          },
+          {
+            "name": "H5"
+          },
+          {
+            "name": "W",
+            "wild": true,
+            "multiplier": 2
+          },
+          {
+            "name": "H6"
+          }
+        ],
+        [
+          {
+            "name": "L2"
+          },
+          {
+            "name": "H4"
+          },
+          {
+            "name": "W",
+            "wild": true,
+            "multiplier": 2
+          },
+          {
+            "name": "H5"
+          },
+          {
+            "name": "H5"
+          },
+          {
+            "name": "L3"
+          },
+          {
+            "name": "H4"
+          }
+        ],
+        [
+          {
+            "name": "L2"
+          },
+          {
+            "name": "L4"
+          },
+          {
+            "name": "H6"
+          },
+          {
+            "name": "L3"
+          },
+          {
+            "name": "H5"
+          },
+          {
+            "name": "H5"
+          },
+          {
+            "name": "H4"
+          }
+        ],
+        [
+          {
+            "name": "K",
+            "multiplier": 3
+          },
+          {
+            "name": "W",
+            "wild": true,
+            "multiplier": 2
+          },
+          {
+            "name": "W",
+            "wild": true,
+            "multiplier": 2
+          },
+          {
+            "name": "W",
+            "wild": true,
+            "multiplier": 2
+          },
+          {
+            "name": "W",
+            "wild": true,
+            "multiplier": 2
+          },
+          {
+            "name": "W",
+            "wild": true,
+            "multiplier": 2
+          },
+          {
+            "name": "L3"
+          }
+        ],
+        [
+          {
+            "name": "H2"
+          },
+          {
+            "name": "W",
+            "wild": true,
+            "multiplier": 2
+          },
+          {
+            "name": "H5"
+          },
+          {
+            "name": "L3"
+          },
+          {
+            "name": "L2"
+          },
+          {
+            "name": "W",
+            "wild": true,
+            "multiplier": 2
+          },
+          {
+            "name": "L1"
+          }
+        ]
+      ],
+      "paddingPositions": [
+        51,
+        48,
+        4,
+        16,
+        7
+      ],
+      "gameType": "basegame",
+      "anticipation": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "index": 1,
+      "type": "winInfo",
+      "totalWin": 7200,
+      "wins": [
+        {
+          "symbol": "H5",
+          "kind": 4,
+          "win": 600,
+          "positions": [
+            {
+              "reel": 0,
+              "row": 4
+            },
+            {
+              "reel": 1,
+              "row": 4
+            },
+            {
+              "reel": 2,
+              "row": 4
+            },
+            {
+              "reel": 3,
+              "row": 4
+            }
+          ],
+          "meta": {
+            "lineIndex": 3,
+            "multiplier": 2,
+            "winWithoutMult": 300,
+            "globalMult": 1,
+            "lineMultiplier": 2
+          }
+        },
+        {
+          "symbol": "H5",
+          "kind": 5,
+          "win": 3600,
+          "positions": [
+            {
+              "reel": 0,
+              "row": 5
+            },
+            {
+              "reel": 1,
+              "row": 4
+            },
+            {
+              "reel": 2,
+              "row": 4
+            },
+            {
+              "reel": 3,
+              "row": 4
+            },
+            {
+              "reel": 4,
+              "row": 5
+            }
+          ],
+          "meta": {
+            "lineIndex": 6,
+            "multiplier": 6,
+            "winWithoutMult": 600,
+            "globalMult": 1,
+            "lineMultiplier": 6
+          }
+        },
+        {
+          "symbol": "H6",
+          "kind": 4,
+          "win": 1200,
+          "positions": [
+            {
+              "reel": 0,
+              "row": 3
+            },
+            {
+              "reel": 1,
+              "row": 2
+            },
+            {
+              "reel": 2,
+              "row": 2
+            },
+            {
+              "reel": 3,
+              "row": 2
+            }
+          ],
+          "meta": {
+            "lineIndex": 9,
+            "multiplier": 6,
+            "winWithoutMult": 200,
+            "globalMult": 1,
+            "lineMultiplier": 6
+          }
+        },
+        {
+          "symbol": "H5",
+          "kind": 4,
+          "win": 1200,
+          "positions": [
+            {
+              "reel": 0,
+              "row": 3
+            },
+            {
+              "reel": 1,
+              "row": 4
+            },
+            {
+              "reel": 2,
+              "row": 4
+            },
+            {
+              "reel": 3,
+              "row": 4
+            }
+          ],
+          "meta": {
+            "lineIndex": 10,
+            "multiplier": 4,
+            "winWithoutMult": 300,
+            "globalMult": 1,
+            "lineMultiplier": 4
+          }
+        },
+        {
+          "symbol": "H5",
+          "kind": 4,
+          "win": 600,
+          "positions": [
+            {
+              "reel": 0,
+              "row": 4
+            },
+            {
+              "reel": 1,
+              "row": 4
+            },
+            {
+              "reel": 2,
+              "row": 5
+            },
+            {
+              "reel": 3,
+              "row": 4
+            }
+          ],
+          "meta": {
+            "lineIndex": 14,
+            "multiplier": 2,
+            "winWithoutMult": 300,
+            "globalMult": 1,
+            "lineMultiplier": 2
+          }
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "type": "setWin",
+      "amount": 7200,
+      "winLevel": 8
+    },
+    {
+      "index": 3,
+      "type": "setTotalWin",
+      "amount": 7200
+    },
+    {
+      "index": 4,
+      "type": "finalWin",
+      "amount": 7200
+    }
+  ],
+  "criteria": "basegame",
+  "baseGameWins": 72.0,
+  "freeGameWins": 0.0
+}
