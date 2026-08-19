@@ -216,6 +216,25 @@ class GameCalculations(Executables):
     # in these modes guarantees a specific special symbol, and scatters must
     # never appear (these modes stay in base spins only).
     # ------------------------------------------------------------------
+    def sanitize_padding(self) -> None:
+        """Padding (rangees invisibles au-dessus/en-dessous du board) :
+        purement cosmetique mais affiche par le frontend pendant l'animation
+        des rouleaux. Le moteur le tire de la bande REELLE du spin (pas de
+        config.padding_reels), donc S/M/K peuvent s'y retrouver - on les
+        remplace par des symboles bas avant chaque reveal_event. Regle
+        notamment : S fantome en padding (y compris en After Dark ou le
+        DATE ne doit apparaitre nulle part) et M/K decoratifs trompeurs.
+        Aucun impact sur les gains ni sur l'anticipation (le moteur ne
+        compte que les 5 rangees visibles - verifie dans
+        src/calculations/board.py)."""
+        for attr in ("top_symbols", "bottom_symbols"):
+            syms = getattr(self, attr, None)
+            if not syms:
+                continue
+            for i, sym in enumerate(syms):
+                if sym.name in ("S", "M", "K"):
+                    syms[i] = self.create_symbol(random.choice(["L1", "L2", "L3", "L4"]))
+
     def strip_symbols(self, names) -> None:
         """Remplace tout symbole dont le nom est dans `names` par un symbole
         bas aleatoire. Utilise par les modes 'garantie' (match_frenzy /

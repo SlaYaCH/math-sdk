@@ -54,6 +54,7 @@ class GameState(GameStateOverride):
 
             self.expand_special_reels()
             self.in_match_streak = False
+            self.sanitize_padding()
             reveal_event(self)
 
             self.win_data = Lines.get_lines(self.board, self.config, global_multiplier=self.global_multiplier)
@@ -107,7 +108,11 @@ class GameState(GameStateOverride):
             # seule extension possible est le passage d'un palier de streak.
             if self.tier == "after_dark":
                 self.strip_scatters()
+                # L'anticipation est calculee AVANT le strip - un S tire
+                # naturellement laisserait une anticipation fantome.
+                self.anticipation = [0] * self.config.num_reels
             self.expand_special_reels()
+            self.sanitize_padding()
             reveal_event(self)
 
             self.win_data = Lines.get_lines(self.board, self.config, global_multiplier=self.global_multiplier)
@@ -132,6 +137,7 @@ class GameState(GameStateOverride):
                     self.force_match_streak_board(guarantee)
                     self.expand_special_reels()
                     self.in_match_streak = False
+                    self.sanitize_padding()
                     reveal_event(self)
 
                     self.win_data = Lines.get_lines(self.board, self.config, global_multiplier=self.global_multiplier)
