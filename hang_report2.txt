@@ -1,0 +1,26 @@
+PID=30082
+===== DUMP 1 =====
+Process 30082: env/bin/python games/louvo/run.py
+Python v3.12.13 (/usr/local/bin/python3.12)
+
+Thread 30082 (idle): "MainThread"
+    select (selectors.py:415)
+    _communicate (subprocess.py:2115)
+    communicate (subprocess.py:1209)
+    run (subprocess.py:550)
+    run_rust_script (optimization_program/run_script.py:55)
+    run_opt_single_mode (optimization_program/run_script.py:42)
+    <module> (run.py:83)
+
+===== DUMP 2 (5 secondes plus tard) =====
+Process 30082: env/bin/python games/louvo/run.py
+Python v3.12.13 (/usr/local/bin/python3.12)
+
+Thread 30082 (idle): "MainThread"
+    select (selectors.py:415)
+    _communicate (subprocess.py:2115)
+    communicate (subprocess.py:1209)
+    run (subprocess.py:550)
+    run_rust_script (optimization_program/run_script.py:55)
+    run_opt_single_mode (optimization_program/run_script.py:42)
+    <module> (run.py:83)

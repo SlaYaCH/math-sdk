@@ -1,0 +1,21 @@
+===== PROCESSUS EN COURS =====
+vscode     30082 25.3  3.0 379104 250800 pts/0   S+   21:50   2:48 env/bin/python games/louvo/run.py
+
+===== STACK DU PID 1185 =====
+Permission Denied: Try running again with elevated permissions by going 'sudo env "PATH=$PATH" !!'
+
+===== STACK DU PID 1944 =====
+Permission Denied: Try running again with elevated permissions by going 'sudo env "PATH=$PATH" !!'
+
+===== STACK DU PID 1945 =====
+Permission Denied: Try running again with elevated permissions by going 'sudo env "PATH=$PATH" !!'
+
+===== STACK DU PID 1949 =====
+Permission Denied: Try running again with elevated permissions by going 'sudo env "PATH=$PATH" !!'
+
+===== STACK DU PID 1995 =====
+Permission Denied: Try running again with elevated permissions by going 'sudo env "PATH=$PATH" !!'
+
+===== STACK DU PID 30082 =====
+Permission Denied: Try running again with elevated permissions by going 'sudo env "PATH=$PATH" !!'
+

@@ -47,6 +47,8 @@ Confirmed against the real SDK (games/template/ + live tracebacks):
 import random
 
 from src.executables.executables import Executables
+from src.calculations.lines import Lines
+from src.wins.multiplier_strategy import apply_mult
 
 
 class GameCalculations(Executables):
@@ -70,6 +72,13 @@ class GameCalculations(Executables):
                 if symbol.name == "M":
                     match_hits.append((reel_index, symbol))
                 elif symbol.name == "K":
+                    # JAMAIS 2 SUPER LIKE sur le meme rouleau (regle Duel at
+                    # Dawn : 1 seul Outlaw par rouleau) - un 2e K naturel sur
+                    # un rouleau deja servi est retrograde en symbole bas.
+                    if any(r == reel_index for r, _ in superlike_hits):
+                        self._replace_symbol(reel_index, row_index, random.choice(
+                            ["L1", "L2", "L3", "L4"]))
+                        continue
                     if after_first_tier and random.random() < 0.5:
                         self._replace_symbol(reel_index, row_index, random.choice(
                             ["L1", "L2", "L3", "L4"]))
@@ -79,7 +88,14 @@ class GameCalculations(Executables):
         if match_hits and superlike_hits:
             match_hits = []  # SUPER LIKE takes priority; MATCH downgraded below
 
-        superlike_hits = superlike_hits[:1]
+        # Regles SUPER LIKE (precisees 21/08) : jamais 2 sur le meme rouleau
+        # (dedup faite plus haut) ; max 2 par spin en base game, Speed Dating
+        # et Like Storm ; JAMAIS 2 en After Dark (cap 1) ; les tours MATCH
+        # (match_frenzy, Match Streak) strippent deja K en amont.
+        # Multiplicateurs ADDITIONNES par le moteur si 2 bannieres sur la
+        # meme ligne gagnante.
+        max_superlikes = 1 if getattr(self, "tier", "basegame") == "after_dark" else 2
+        superlike_hits = superlike_hits[:max_superlikes]
 
         kept = {id(s) for _, s in match_hits + superlike_hits}
         for reel_index, column in enumerate(self.board):
@@ -216,6 +232,58 @@ class GameCalculations(Executables):
     # in these modes guarantees a specific special symbol, and scatters must
     # never appear (these modes stay in base spins only).
     # ------------------------------------------------------------------
+    def get_lines_louvo(self):
+        """Evaluation des lignes + regle Louvo des wilds "coupes" :
+        une ligne commencant par 3 ou 4 wilds SANS symbole normal payant
+        derriere (coupee par un DATE) paie comme 3 ou 4 exemplaires du
+        meilleur symbole H1/"Le R" (3 -> 4.00, 4 -> 10.00). Le moteur
+        partage (Lines.get_lines) ignorait ces lignes : (3,W)/(4,W)
+        absents du paytable et un S comme "premier symbole normal" ne paie
+        rien -> W,W,W,W,S payait 0 (bug constate en jeu reel).
+        Inchange : wilds suivis d'un symbole normal (la ligne paie ce
+        symbole), 2 wilds seuls (rien), 5 wilds (20.00).
+        Une ligne deja payee par le moteur n'est jamais retouchee - la
+        regle ne s'applique qu'aux lignes a 0."""
+        win_data = Lines.get_lines(self.board, self.config, global_multiplier=self.global_multiplier)
+        paid_lines = {w["meta"]["lineIndex"] for w in win_data["wins"]}
+
+        for line_index, line in self.config.paylines.items():
+            if line_index in paid_lines:
+                continue
+            leading_wilds = 0
+            for reel in range(len(line)):
+                if self.board[reel][line[reel]].check_attribute("wild"):
+                    leading_wilds += 1
+                else:
+                    break
+            if leading_wilds not in (3, 4):
+                continue
+            base_win = self.config.paytable[(leading_wilds, "H1")]
+            positions = [{"reel": idx, "row": line[idx]} for idx in range(leading_wilds)]
+            line_win, applied_mult = apply_mult(
+                self.board,
+                "symbol",
+                global_multiplier=self.global_multiplier,
+                win_amount=base_win,
+                positions=positions,
+            )
+            win_data["wins"].append(Lines.line_win_info(
+                "W",
+                leading_wilds,
+                line_win,
+                positions,
+                {
+                    "lineIndex": line_index,
+                    "multiplier": applied_mult,
+                    "winWithoutMult": base_win,
+                    "globalMult": int(self.global_multiplier),
+                    "lineMultiplier": int(applied_mult / self.global_multiplier),
+                },
+            ))
+            win_data["totalWin"] += line_win
+
+        return win_data
+
     def sanitize_padding(self) -> None:
         """Padding (rangees invisibles au-dessus/en-dessous du board) :
         purement cosmetique mais affiche par le frontend pendant l'animation
@@ -271,23 +339,46 @@ class GameCalculations(Executables):
             self._replace_symbol(reel_index, row_index, "M")
 
     def force_like_storm_board(self) -> None:
-        """Like Storm: guarantee 1 SUPER LIKE symbol with at least 2 likes.
-        Rien d'autre de special ne doit apparaitre : ni scatter (DATE), ni
-        MATCH."""
-        self.strip_symbols(("S", "M"))
+        """Like Storm (refonte facon LONE OUTLAW FEATURESPINS de Duel at Dawn) :
+        - garantit 1 SUPER LIKE avec au moins 2 coeurs ;
+        - 1 chance sur 4 d'un 2e SUPER LIKE (autre rouleau, coeurs libres
+          1-6), max 2 par spin comme le jeu de reference ;
+        - rien d'autre de special (ni scatter/DATE, ni MATCH) ;
+        - les wilds tires ne tombent jamais sur les memes cases ni sur les
+          bannieres (set `occupied` de expand_special_reels) et restent des
+          wilds simples sans multiplicateur ;
+        - tentative wincap : 2 SUPER LIKE forces a 200x chacun - le moteur
+          ADDITIONNE les multiplicateurs des deux bannieres sur une meme
+          ligne (400x) - et le reste du plateau en H1."""
+        # On retire AUSSI les K naturels de la bande : seuls les K poses par
+        # cette fonction existent, donc la garantie "1er K avec 2+ coeurs"
+        # ne peut jamais etre ecartee par le cap max-2 (bug : 30/3000 books
+        # du run precedent avaient 3 K et perdaient le K garanti).
+        self.strip_symbols(("S", "M", "K"))
         is_wincap_attempt = getattr(self, "criteria", "") == "wincap"
-        reel_index = random.randrange(self.config.num_reels)
-        row_index = random.randrange(self.config.num_rows[reel_index])
-        self._replace_symbol(reel_index, row_index, "K")
-        new_symbol = self.board[reel_index][row_index]
+
+        reel_indices = list(range(self.config.num_reels))
+        random.shuffle(reel_indices)
+        first_reel, second_reel = reel_indices[0], reel_indices[1]
+
+        row_index = random.randrange(self.config.num_rows[first_reel])
+        self._replace_symbol(first_reel, row_index, "K")
+        first_symbol = self.board[first_reel][row_index]
         if not hasattr(self, "pending_likes"):
             self.pending_likes = {}
-        self.pending_likes[id(new_symbol)] = random.choice([2, 3, 4, 5, 6])
+        self.pending_likes[id(first_symbol)] = random.choice([2, 3, 4, 5, 6])
+
+        second_symbol = None
+        if is_wincap_attempt or random.random() < 0.25:
+            row_index = random.randrange(self.config.num_rows[second_reel])
+            self._replace_symbol(second_reel, row_index, "K")
+            second_symbol = self.board[second_reel][row_index]
 
         if is_wincap_attempt:
-            new_symbol.multiplier = 200
+            first_symbol.multiplier = 200
+            second_symbol.multiplier = 200
             for r in range(self.config.num_reels):
-                if r == reel_index:
+                if r in (first_reel, second_reel):
                     continue
                 for row in range(self.config.num_rows[r]):
                     self._replace_symbol(r, row, "H1")

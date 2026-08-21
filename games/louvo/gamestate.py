@@ -52,12 +52,18 @@ class GameState(GameStateOverride):
             elif self.betmode == "like_storm":
                 self.force_like_storm_board()
 
+            # Tour de DECLENCHEMENT d'un bonus (3+ S) : aucun M/K ne doit
+            # se resoudre - sa banniere pleine colonne masquerait un des S
+            # (cas reel constate : achat After Dark, 4 S dont 1 invisible
+            # sous une banniere K, le joueur ne voyait que 3 DATE).
+            if self.check_fs_condition():
+                self.strip_symbols(("M", "K"))
             self.expand_special_reels()
             self.in_match_streak = False
             self.sanitize_padding()
             reveal_event(self)
 
-            self.win_data = Lines.get_lines(self.board, self.config, global_multiplier=self.global_multiplier)
+            self.win_data = self.get_lines_louvo()
             Lines.record_lines_wins(self)
             self.win_manager.update_spinwin(self.win_data["totalWin"])
             Lines.emit_linewin_events(self)
@@ -115,7 +121,7 @@ class GameState(GameStateOverride):
             self.sanitize_padding()
             reveal_event(self)
 
-            self.win_data = Lines.get_lines(self.board, self.config, global_multiplier=self.global_multiplier)
+            self.win_data = self.get_lines_louvo()
             Lines.record_lines_wins(self)
             self.win_manager.update_spinwin(self.win_data["totalWin"])
             Lines.emit_linewin_events(self)
@@ -140,7 +146,7 @@ class GameState(GameStateOverride):
                     self.sanitize_padding()
                     reveal_event(self)
 
-                    self.win_data = Lines.get_lines(self.board, self.config, global_multiplier=self.global_multiplier)
+                    self.win_data = self.get_lines_louvo()
                     Lines.record_lines_wins(self)
                     self.win_manager.update_spinwin(self.win_data["totalWin"])
                     Lines.emit_linewin_events(self)

@@ -1,0 +1,210 @@
+===== src/calculations/lines.py (complet) =====
+"""Evaluates and records winds for lines games."""
+
+from src.calculations.symbol import Symbol
+from src.config.config import Config
+from src.wins.multiplier_strategy import apply_mult
+from src.events.events import (
+    win_info_event,
+    set_win_event,
+    set_total_event,
+)
+
+
+class Lines:
+    """Collection of functions to handle line-win games."""
+
+    @staticmethod
+    def line_win_info(symbol: str, kind: int, win: float, positions: list, meta_data: dict) -> dict:
+        """Construct line-win event key."""
+        return {
+            "symbol": symbol,
+            "kind": kind,
+            "win": win,
+            "positions": positions,
+            "meta": meta_data,
+        }
+
+    @staticmethod
+    def get_lines(
+        board: list[list[Symbol]],
+        config: Config,
+        wild_key: str = "wild",
+        wild_sym: str = "W",
+        multiplier_method: str = "symbol",
+        global_multiplier: int = 1,
+    ):
+        """More efficient lines calculation"""
+        return_data = {
+            "totalWin": 0,
+            "wins": [],
+        }
+
+        for line_index in config.paylines.keys():
+            line = config.paylines[line_index]
+            first_sym = board[0][line[0]]
+            finished_wild_win = False if first_sym.check_attribute(wild_key) else True
+            first_non_wild = first_sym if finished_wild_win else None
+            potential_line = [first_sym]
+
+            wild_matches = 0 * (finished_wild_win) + 1 * (not (finished_wild_win))
+            matches = 1 * (finished_wild_win) + 0 * (not (finished_wild_win))
+            base_win, wild_win = 0, 0
+
+            for reel in range(1, len(line)):
+                sym = board[reel][line[reel]]
+                if finished_wild_win:
+                    if sym.name == first_non_wild.name or sym.check_attribute(wild_key):
+                        matches += 1
+                    else:
+                        break
+                else:
+                    if sym.check_attribute(wild_key) and first_non_wild is None:
+                        wild_matches += 1
+                    elif first_non_wild is None:
+                        first_non_wild = sym
+                        matches += 1
+                        finished_wild_win = True
+                    else:
+                        break
+                potential_line.append(sym)
+
+            if (wild_matches, wild_sym) in config.paytable:
+                wild_win = config.paytable[(wild_matches, wild_sym)]
+            if first_non_wild is not None:
+                if (wild_matches + matches, first_non_wild.name) in config.paytable:
+                    base_win = config.paytable[(wild_matches + matches, first_non_wild.name)]
+
+            if base_win > 0 or wild_win > 0:
+                if wild_win > base_win:
+                    positions = [{"reel": idx, "row": line[idx]} for idx in range(0, wild_matches)]
+                    line_win, applied_mult = apply_mult(
+                        board,
+                        multiplier_method,
+                        global_multiplier=global_multiplier,
+                        win_amount=wild_win,
+                        positions=positions,
+                    )
+                    win_dict = Lines.line_win_info(
+                        potential_line[0].name,
+                        wild_matches,
+                        line_win,
+                        positions,
+                        {
+                            "lineIndex": line_index,
+                            "multiplier": applied_mult,
+                            "winWithoutMult": wild_win,
+                            "globalMult": int(global_multiplier),
+                            "lineMultiplier": int(applied_mult / global_multiplier),
+                        },
+                    )
+                else:
+                    positions = [{"reel": idx, "row": line[idx]} for idx in range(0, matches + wild_matches)]
+                    line_win, applied_mult = apply_mult(
+                        board,
+                        multiplier_method,
+                        global_multiplier=global_multiplier,
+                        win_amount=base_win,
+                        positions=positions,
+                    )
+                    win_dict = Lines.line_win_info(
+                        first_non_wild.name,
+                        matches + wild_matches,
+                        line_win,
+                        positions,
+                        {
+                            "lineIndex": line_index,
+                            "multiplier": applied_mult,
+                            "winWithoutMult": base_win,
+                            "globalMult": int(global_multiplier),
+                            "lineMultiplier": int(applied_mult / global_multiplier),
+                        },
+                    )
+
+                return_data["totalWin"] += line_win
+                return_data["wins"].append(win_dict)
+
+        return return_data
+
+    @staticmethod
+    def emit_linewin_events(gamestate) -> None:
+        """Transmit win events asociated with lines wins."""
+        if gamestate.win_manager.spin_win > 0:
+            win_info_event(gamestate)
+            gamestate.evaluate_wincap()
+            set_win_event(gamestate)
+        set_total_event(gamestate)
+
+    @staticmethod
+    def record_lines_wins(gamestate) -> None:
+        """Data for force-file."""
+
+        def record_line(kind: int, symbol: str, mult: int, gametype: str) -> None:
+            """Force file description for line-win."""
+            gamestate.record({"kind": kind, "symbol": symbol, "mult": mult, "gametype": gametype})
+
+        for win in gamestate.win_data["wins"]:
+            record_line(len(win["positions"]), win["symbol"], win["meta"]["multiplier"], gamestate.gametype)
+
+===== PAYTABLE louvo =====
+57-        # --- paytable ---------------------------------------------------
+58-        # (kind, symbol): payout as a multiplier of bet
+59:        self.paytable = {
+60-            (5, "W"): 20.0,
+61-
+62-            (5, "H1"): 20.0, (4, "H1"): 10.0, (3, "H1"): 4.0,    # Le R
+63-            (5, "H2"): 16.0, (4, "H2"): 8.0,  (3, "H2"): 2.0,    # Inso
+64-            (5, "H3"): 12.0, (4, "H3"): 6.0,  (3, "H3"): 1.5,    # Shanna
+65-            (5, "H4"): 8.0,  (4, "H4"): 4.0,  (3, "H4"): 1.0,    # Manu
+66-            (5, "H5"): 6.0,  (4, "H5"): 3.0,  (3, "H5"): 0.7,    # Indigo
+67-            (5, "H6"): 4.0,  (4, "H6"): 2.0,  (3, "H6"): 0.5,    # Coca Cherry
+68-
+69-            (5, "L1"): 2.0, (4, "L1"): 1.0, (3, "L1"): 0.2,      # Verifie
+70-            (5, "L2"): 2.0, (4, "L2"): 1.0, (3, "L2"): 0.2,      # Message
+71-            (5, "L3"): 2.0, (4, "L3"): 1.0, (3, "L3"): 0.2,      # Flamme
+72-            (5, "L4"): 2.0, (4, "L4"): 1.0, (3, "L4"): 0.2,      # Coeur
+73-        }
+74-
+75-        self.include_padding = True
+76-
+77-        # --- special symbols ---------------------------------------------
+78-        # NOTE: "multiplier" must be registered here for Symbol to accept it
+79-        # (confirmed by a real AttributeError otherwise). "likes" is NOT
+80-        # registered - Symbol rejected it even when registered, so that
+81-        # value is tracked separately on self.pending_likes instead (see
+82-        # game_override.py / game_calculations.py).
+83-        self.special_symbols = {
+84-            "wild": ["W"],
+85-            "scatter": ["S"],
+86-            "multiplier": ["M", "K", "W"],  # M/K carry it first, W after expansion
+87-        }
+88-
+89-        # --- free spin triggers -------------------------------------------
+90-        # 3 scatters -> "Speed Dating" tier (10 FS) / 4+ scatters -> "After
+91-        # Dark" tier (10 FS). Both start with 10 spins; which tier is active
+92-        # is decided from the scatter count in gamestate.py, since the two
+93-        # tiers use different reel-sets and different bonus logic.
+94-        # Retrigger during the bonus: Speed Dating only, 3+ extra
+95-        # scatters = +5 spins. After Dark has NO retrigger at all - nothing else is
+96-        # defined, so 4+ stays capped at the same +4 as the top tier rather
+97-        # than inventing an escalating +6/+8/etc.
+98-        # NOTE: a single reel can show 2 "S" symbols within its 5-row
+99-        # visible window (reel strips only have ~48-50 stops), so the total
+100-        # scatter count across 5 reels can exceed 5 - both dicts cover up to
+101-        # 10 defensively so a rare high count never crashes with a KeyError,
+102-        # it just resolves as equivalent to the top designed tier.
+103-        self.freespin_triggers = {
+104-            self.basegame_type: {3: 10, **{n: 10 for n in range(4, 11)}},
+
+===== APPELS Lines DANS gamestate =====
+13:  - Lines.get_lines()/record_lines_wins()/emit_linewin_events() are called as
+14:    Lines.<method>(self, ...) - NOT self.<method>() as the public docs implied.
+66:            self.win_data = Lines.get_lines(self.board, self.config, global_multiplier=self.global_multiplier)
+67:            Lines.record_lines_wins(self)
+69:            Lines.emit_linewin_events(self)
+124:            self.win_data = Lines.get_lines(self.board, self.config, global_multiplier=self.global_multiplier)
+125:            Lines.record_lines_wins(self)
+127:            Lines.emit_linewin_events(self)
+149:                    self.win_data = Lines.get_lines(self.board, self.config, global_multiplier=self.global_multiplier)
+150:                    Lines.record_lines_wins(self)
+152:                    Lines.emit_linewin_events(self)

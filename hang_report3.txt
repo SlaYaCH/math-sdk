@@ -1,0 +1,146 @@
+===== PROCESSUS RUST / CARGO =====
+vscode     32571 97.3  0.6  86612 54508 pts/0    Sl+  21:53  10:42 target/release/PigFarmRust
+
+===== DERNIERES LIGNES CAPTUREES PAR tee =====
+High repeat count:
+ Current Count: 4000 
+ Criteria: wincap 
+ Simulation: 2913
+  warn(
+/workspaces/math-sdk/src/state/state.py:135: UserWarning: 
+High repeat count:
+ Current Count: 5000 
+ Criteria: wincap 
+ Simulation: 2913
+  warn(
+Thread 0 finished with 2.79 RTP. [baseGame: 2.79, freeGame: 0.0]
+Saving books for  louvo in match_frenzy
+Saving force files for louvo in match_frenzy
+Saving LUTs for louvo in match_frenzy
+Wrote verification file: /workspaces/math-sdk/games/louvo/library/configs/books_match_frenzy.verification.json
+
+Creating books for louvo in like_storm
+Batch 1 of 6
+Thread 0 finished with 3.559 RTP. [baseGame: 3.559, freeGame: 0.0]
+Batch 2 of 6
+Thread 0 finished with 3.348 RTP. [baseGame: 3.348, freeGame: 0.0]
+Batch 3 of 6
+Thread 0 finished with 2.894 RTP. [baseGame: 2.894, freeGame: 0.0]
+Batch 4 of 6
+Thread 0 finished with 3.087 RTP. [baseGame: 3.087, freeGame: 0.0]
+Batch 5 of 6
+Thread 0 finished with 3.196 RTP. [baseGame: 3.196, freeGame: 0.0]
+Batch 6 of 6
+Thread 0 finished with 3.844 RTP. [baseGame: 3.844, freeGame: 0.0]
+
+===== FICHIERS MODIFIES CES 45 DERNIERES MINUTES =====
+games/louvo/library/publish_files/lookUpTable_bonus_after_dark_0.csv
+games/louvo/library/publish_files/books_bonus_speed_dating.jsonl.zst
+games/louvo/library/publish_files/books_bonus_after_dark.jsonl.zst
+games/louvo/library/publish_files/books_match_boost.jsonl.zst
+games/louvo/library/publish_files/books_base.jsonl.zst
+games/louvo/library/publish_files/lookUpTable_bonus_speed_dating_0.csv
+games/louvo/library/publish_files/lookUpTable_base_0.csv
+games/louvo/library/publish_files/books_match_frenzy.jsonl.zst
+games/louvo/library/publish_files/index.json
+games/louvo/library/publish_files/books_like_storm.jsonl.zst
+games/louvo/library/lookup_tables/lookUpTable_match_boost.csv
+games/louvo/library/lookup_tables/lookUpTableSegmented_match_frenzy.csv
+games/louvo/library/lookup_tables/lookUpTableSegmented_base.csv
+games/louvo/library/lookup_tables/lookUpTable_like_storm.csv
+games/louvo/library/lookup_tables/lookUpTable_match_frenzy.csv
+games/louvo/library/lookup_tables/lookUpTable_base.csv
+games/louvo/library/lookup_tables/lookUpTableSegmented_bonus_after_dark.csv
+games/louvo/library/lookup_tables/lookUpTableSegmented_match_boost.csv
+games/louvo/library/lookup_tables/lookUpTable_bonus_after_dark.csv
+games/louvo/library/lookup_tables/lookUpTableSegmented_bonus_speed_dating.csv
+games/louvo/library/lookup_tables/lookUpTable_bonus_speed_dating.csv
+games/louvo/library/lookup_tables/lookUpTableSegmented_like_storm.csv
+games/louvo/library/configs/event_config_bonus_speed_dating.json
+games/louvo/library/configs/books_bonus_after_dark.verification.json
+games/louvo/library/configs/config_fe_louvo.json
+games/louvo/library/configs/books_like_storm.verification.json
+games/louvo/library/configs/event_config_like_storm.json
+games/louvo/library/configs/books_base.verification.json
+games/louvo/library/configs/event_config_match_frenzy.json
+games/louvo/library/configs/config.json
+games/louvo/library/configs/books_bonus_speed_dating.verification.json
+games/louvo/library/configs/event_config_match_boost.json
+games/louvo/library/configs/books_match_boost.verification.json
+games/louvo/library/configs/math_config.json
+games/louvo/library/configs/event_config_base.json
+games/louvo/library/configs/event_config_bonus_after_dark.json
+games/louvo/library/configs/books_match_frenzy.verification.json
+games/louvo/library/optimization_files/base_0_1.csv
+games/louvo/library/optimization_files/bonus_after_dark_0_7.csv
+games/louvo/library/optimization_files/bonus_after_dark_0_3.csv
+
+===== optimization_program/run_script.py =====
+import json
+import toml
+import subprocess
+import os
+from src.config.paths import PATH_TO_GAMES, SETUP_PATH, OPTIMIZATION_PATH, PROJECT_PATH
+
+
+class OptimizationExecution:
+    """Handles execution of Rust optimization algorithm from python."""
+
+    @staticmethod
+    def load_math_config(filename: str) -> dict:
+        """Load optimization parameter config file."""
+        with open(filename, "r", encoding="UTF-8") as f:
+            data = json.load(f)
+        return data
+
+    @staticmethod
+    def run_opt_single_mode(game_config, mode, threads):
+        """Create setup txt file for a single mode and run Rust executable binary."""
+        os.chdir(PROJECT_PATH)
+        filename = os.path.join(PATH_TO_GAMES, game_config.game_id, "library", "configs", "math_config.json")
+        opt_config = OptimizationExecution.load_math_config(filename)
+
+        opt_config = game_config.opt_params
+        params = None
+        for idx, obj in opt_config.items():
+            if idx == mode:
+                params = obj["parameters"]
+        params["game_name"] = game_config.game_id
+        params["path_to_games"] = "../games/"
+        params["run_1000_batch"] = False
+        params["bet_type"] = mode
+        params["threads_for_fence_construction"] = threads
+        params["threads_for_show_construction"] = threads
+
+        assert params is not None, "Could not load optimization parameters."
+
+        with open(SETUP_PATH, "w", encoding="UTF-8") as f:
+            toml.dump(params, f)
+        print(f"Running optimization for mode: {mode}")
+        OptimizationExecution.run_rust_script()
+
+    @staticmethod
+    def run_all_modes(game_config, modes_to_run, rust_threads):
+        """Loop through all game modes to run"""
+        for mode in modes_to_run:
+            OptimizationExecution.run_opt_single_mode(game_config, mode, rust_threads)
+
+    @staticmethod
+    def run_rust_script():
+        """Run compiled binary and pip results to terminal."""
+        cargo_bin_path = os.path.join(os.path.expanduser("~"), ".cargo", "bin")
+        updated_path = cargo_bin_path + os.pathsep + os.environ.get("PATH", "")
+        result = subprocess.run(
+            ["cargo", "run", "--release"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            cwd=OPTIMIZATION_PATH,
+            check=True,
+            env={**os.environ, "PATH": updated_path},
+        )
+        if result.returncode == 0:
+            print(result.stdout)
+        else:
+            print("Error in optimization program.")
+            print(result.stderr)

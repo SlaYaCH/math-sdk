@@ -93,8 +93,7 @@ class GameConfig(Config):
         # tiers use different reel-sets and different bonus logic.
         # Retrigger during the bonus: Speed Dating only, 3+ extra
         # scatters = +5 spins. After Dark has NO retrigger at all - nothing else is
-        # defined, so 4+ stays capped at the same +4 as the top tier rather
-        # than inventing an escalating +6/+8/etc.
+        # defined: any 3-10 extra-scatter count resolves to the same +5.
         # NOTE: a single reel can show 2 "S" symbols within its 5-row
         # visible window (reel strips only have ~48-50 stops), so the total
         # scatter count across 5 reels can exceed 5 - both dicts cover up to

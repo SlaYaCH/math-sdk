@@ -71,6 +71,8 @@ class GameStateOverride(GameExecutables):
         self.pending_likes[id(symbol)] = get_random_outcome(
             self.config.superlike_like_values[tier]
         )
+        # Banniere SUPER LIKE : ladder complet 2-200x, comme les duels
+        # MATCH (regle Duel at Dawn).
         symbol.multiplier = get_random_outcome(self.config.duel_multiplier_values[tier])
 
     def check_game_repeat(self):
