@@ -1,0 +1,443 @@
+env/bin/python games/louvo/run.py
+
+Creating books...
+
+Creating books for louvo in base
+Batch 1 of 40
+Thread 0 finished with 285.811 RTP. [baseGame: 13.566, freeGame: 272.245]
+Batch 2 of 40
+Thread 0 finished with 302.733 RTP. [baseGame: 17.263, freeGame: 285.471]
+Batch 3 of 40
+Thread 0 finished with 220.899 RTP. [baseGame: 13.253, freeGame: 207.646]
+Batch 4 of 40
+Thread 0 finished with 232.392 RTP. [baseGame: 12.232, freeGame: 220.16]
+Batch 5 of 40
+Thread 0 finished with 366.56 RTP. [baseGame: 14.819, freeGame: 351.741]
+Batch 6 of 40
+Thread 0 finished with 338.961 RTP. [baseGame: 15.423, freeGame: 323.538]
+Batch 7 of 40
+Thread 0 finished with 352.148 RTP. [baseGame: 19.467, freeGame: 332.68]
+Batch 8 of 40
+Thread 0 finished with 296.64 RTP. [baseGame: 6.532, freeGame: 290.108]
+Batch 9 of 40
+Thread 0 finished with 356.669 RTP. [baseGame: 14.461, freeGame: 342.207]
+Batch 10 of 40
+Thread 0 finished with 391.727 RTP. [baseGame: 10.29, freeGame: 381.437]
+Batch 11 of 40
+Thread 0 finished with 355.61 RTP. [baseGame: 13.386, freeGame: 342.224]
+Batch 12 of 40
+Thread 0 finished with 311.902 RTP. [baseGame: 12.533, freeGame: 299.369]
+Batch 13 of 40
+Thread 0 finished with 279.061 RTP. [baseGame: 15.444, freeGame: 263.617]
+Batch 14 of 40
+Thread 0 finished with 241.743 RTP. [baseGame: 17.541, freeGame: 224.202]
+Batch 15 of 40
+Thread 0 finished with 367.334 RTP. [baseGame: 13.356, freeGame: 353.978]
+Batch 16 of 40
+Thread 0 finished with 388.642 RTP. [baseGame: 7.785, freeGame: 380.857]
+Batch 17 of 40
+Thread 0 finished with 190.036 RTP. [baseGame: 11.78, freeGame: 178.256]
+Batch 18 of 40
+Thread 0 finished with 375.913 RTP. [baseGame: 10.108, freeGame: 365.805]
+Batch 19 of 40
+Thread 0 finished with 200.248 RTP. [baseGame: 12.098, freeGame: 188.15]
+Batch 20 of 40
+Thread 0 finished with 310.22 RTP. [baseGame: 13.082, freeGame: 297.138]
+Batch 21 of 40
+Thread 0 finished with 251.459 RTP. [baseGame: 18.971, freeGame: 232.489]
+Batch 22 of 40
+Thread 0 finished with 319.445 RTP. [baseGame: 12.659, freeGame: 306.786]
+Batch 23 of 40
+Thread 0 finished with 175.537 RTP. [baseGame: 11.737, freeGame: 163.8]
+Batch 24 of 40
+Thread 0 finished with 250.465 RTP. [baseGame: 18.686, freeGame: 231.779]
+Batch 25 of 40
+Thread 0 finished with 275.027 RTP. [baseGame: 14.162, freeGame: 260.865]
+Batch 26 of 40
+Thread 0 finished with 288.913 RTP. [baseGame: 13.914, freeGame: 274.999]
+Batch 27 of 40
+Thread 0 finished with 222.2 RTP. [baseGame: 11.557, freeGame: 210.643]
+Batch 28 of 40
+Thread 0 finished with 376.492 RTP. [baseGame: 11.671, freeGame: 364.82]
+Batch 29 of 40
+Thread 0 finished with 340.53 RTP. [baseGame: 8.939, freeGame: 331.591]
+Batch 30 of 40
+Thread 0 finished with 231.431 RTP. [baseGame: 14.316, freeGame: 217.115]
+Batch 31 of 40
+Thread 0 finished with 291.184 RTP. [baseGame: 9.211, freeGame: 281.974]
+Batch 32 of 40
+Thread 0 finished with 220.786 RTP. [baseGame: 10.01, freeGame: 210.776]
+Batch 33 of 40
+Thread 0 finished with 228.819 RTP. [baseGame: 12.601, freeGame: 216.217]
+Batch 34 of 40
+Thread 0 finished with 309.538 RTP. [baseGame: 16.203, freeGame: 293.335]
+Batch 35 of 40
+Thread 0 finished with 297.401 RTP. [baseGame: 8.431, freeGame: 288.97]
+Batch 36 of 40
+Thread 0 finished with 289.057 RTP. [baseGame: 14.046, freeGame: 275.012]
+Batch 37 of 40
+Thread 0 finished with 220.81 RTP. [baseGame: 22.223, freeGame: 198.587]
+Batch 38 of 40
+Thread 0 finished with 465.778 RTP. [baseGame: 16.139, freeGame: 449.639]
+Batch 39 of 40
+Thread 0 finished with 281.694 RTP. [baseGame: 10.648, freeGame: 271.046]
+Batch 40 of 40
+Thread 0 finished with 375.594 RTP. [baseGame: 7.843, freeGame: 367.752]
+Saving books for  louvo in base
+Saving force files for louvo in base
+Saving LUTs for louvo in base
+Wrote verification file: /workspaces/math-sdk/games/louvo/library/configs/books_base.verification.json
+
+Creating books for louvo in bonus_speed_dating
+Batch 1 of 6
+Thread 0 finished with 17.621 RTP. [baseGame: 0.001, freeGame: 17.62]
+Batch 2 of 6
+Thread 0 finished with 17.333 RTP. [baseGame: 0.002, freeGame: 17.332]
+Batch 3 of 6
+Thread 0 finished with 16.756 RTP. [baseGame: 0.001, freeGame: 16.756]
+Batch 4 of 6
+Thread 0 finished with 16.864 RTP. [baseGame: 0.001, freeGame: 16.863]
+Batch 5 of 6
+Thread 0 finished with 16.702 RTP. [baseGame: 0.001, freeGame: 16.701]
+Batch 6 of 6
+Thread 0 finished with 18.095 RTP. [baseGame: 0.001, freeGame: 18.093]
+Saving books for  louvo in bonus_speed_dating
+Saving force files for louvo in bonus_speed_dating
+Saving LUTs for louvo in bonus_speed_dating
+Wrote verification file: /workspaces/math-sdk/games/louvo/library/configs/books_bonus_speed_dating.verification.json
+
+Creating books for louvo in bonus_after_dark
+Batch 1 of 6
+Thread 0 finished with 35.569 RTP. [baseGame: 0.0, freeGame: 35.569]
+Batch 2 of 6
+Thread 0 finished with 35.688 RTP. [baseGame: 0.0, freeGame: 35.688]
+Batch 3 of 6
+Thread 0 finished with 34.616 RTP. [baseGame: 0.001, freeGame: 34.615]
+Batch 4 of 6
+Thread 0 finished with 34.4 RTP. [baseGame: 0.001, freeGame: 34.399]
+Batch 5 of 6
+Thread 0 finished with 35.849 RTP. [baseGame: 0.001, freeGame: 35.848]
+Batch 6 of 6
+Thread 0 finished with 33.244 RTP. [baseGame: 0.001, freeGame: 33.243]
+Saving books for  louvo in bonus_after_dark
+Saving force files for louvo in bonus_after_dark
+Saving LUTs for louvo in bonus_after_dark
+Wrote verification file: /workspaces/math-sdk/games/louvo/library/configs/books_bonus_after_dark.verification.json
+
+Creating books for louvo in match_boost
+Batch 1 of 10
+Thread 0 finished with 429.931 RTP. [baseGame: 3.662, freeGame: 426.269]
+Batch 2 of 10
+Thread 0 finished with 462.646 RTP. [baseGame: 2.708, freeGame: 459.938]
+Batch 3 of 10
+Thread 0 finished with 409.404 RTP. [baseGame: 1.911, freeGame: 407.493]
+Batch 4 of 10
+Thread 0 finished with 580.068 RTP. [baseGame: 2.157, freeGame: 577.911]
+Batch 5 of 10
+Thread 0 finished with 444.195 RTP. [baseGame: 1.928, freeGame: 442.267]
+Batch 6 of 10
+Thread 0 finished with 470.844 RTP. [baseGame: 7.767, freeGame: 463.077]
+Batch 7 of 10
+Thread 0 finished with 535.455 RTP. [baseGame: 1.966, freeGame: 533.489]
+Batch 8 of 10
+Thread 0 finished with 561.639 RTP. [baseGame: 1.729, freeGame: 559.911]
+Batch 9 of 10
+Thread 0 finished with 519.703 RTP. [baseGame: 3.559, freeGame: 516.143]
+Batch 10 of 10
+Thread 0 finished with 530.044 RTP. [baseGame: 1.914, freeGame: 528.13]
+Saving books for  louvo in match_boost
+Saving force files for louvo in match_boost
+Saving LUTs for louvo in match_boost
+Wrote verification file: /workspaces/math-sdk/games/louvo/library/configs/books_match_boost.verification.json
+
+Creating books for louvo in match_frenzy
+Batch 1 of 6
+Thread 0 finished with 2.629 RTP. [baseGame: 2.629, freeGame: 0.0]
+Batch 2 of 6
+Thread 0 finished with 2.872 RTP. [baseGame: 2.872, freeGame: 0.0]
+Batch 3 of 6
+Thread 0 finished with 2.547 RTP. [baseGame: 2.547, freeGame: 0.0]
+Batch 4 of 6
+Thread 0 finished with 2.397 RTP. [baseGame: 2.397, freeGame: 0.0]
+Batch 5 of 6
+Thread 0 finished with 2.51 RTP. [baseGame: 2.51, freeGame: 0.0]
+Batch 6 of 6
+/workspaces/math-sdk/src/state/state.py:135: UserWarning: 
+High repeat count:
+ Current Count: 1000 
+ Criteria: wincap 
+ Simulation: 2913
+  warn(
+/workspaces/math-sdk/src/state/state.py:135: UserWarning: 
+High repeat count:
+ Current Count: 2000 
+ Criteria: wincap 
+ Simulation: 2913
+  warn(
+/workspaces/math-sdk/src/state/state.py:135: UserWarning: 
+High repeat count:
+ Current Count: 3000 
+ Criteria: wincap 
+ Simulation: 2913
+  warn(
+/workspaces/math-sdk/src/state/state.py:135: UserWarning: 
+High repeat count:
+ Current Count: 4000 
+ Criteria: wincap 
+ Simulation: 2913
+  warn(
+/workspaces/math-sdk/src/state/state.py:135: UserWarning: 
+High repeat count:
+ Current Count: 5000 
+ Criteria: wincap 
+ Simulation: 2913
+  warn(
+Thread 0 finished with 2.79 RTP. [baseGame: 2.79, freeGame: 0.0]
+Saving books for  louvo in match_frenzy
+Saving force files for louvo in match_frenzy
+Saving LUTs for louvo in match_frenzy
+Wrote verification file: /workspaces/math-sdk/games/louvo/library/configs/books_match_frenzy.verification.json
+
+Creating books for louvo in like_storm
+Batch 1 of 6
+Thread 0 finished with 2.299 RTP. [baseGame: 2.299, freeGame: 0.0]
+Batch 2 of 6
+Thread 0 finished with 1.956 RTP. [baseGame: 1.956, freeGame: 0.0]
+Batch 3 of 6
+Thread 0 finished with 1.676 RTP. [baseGame: 1.676, freeGame: 0.0]
+Batch 4 of 6
+Thread 0 finished with 2.083 RTP. [baseGame: 2.083, freeGame: 0.0]
+Batch 5 of 6
+Thread 0 finished with 1.889 RTP. [baseGame: 1.889, freeGame: 0.0]
+Batch 6 of 6
+Thread 0 finished with 2.405 RTP. [baseGame: 2.405, freeGame: 0.0]
+Saving books for  louvo in like_storm
+Saving force files for louvo in like_storm
+Saving LUTs for louvo in like_storm
+Wrote verification file: /workspaces/math-sdk/games/louvo/library/configs/books_like_storm.verification.json
+
+Finished creating books in 156.9325532913208 seconds.
+
+Running optimization for mode: base
+[base] attempt 1/25 failed (Command '['cargo', 'run', '--release']' returned non-zero exit status 101.)
+Running optimization for mode: base
+[base] attempt 2/25 failed (Command '['cargo', 'run', '--release']' returned non-zero exit status 101.)
+Running optimization for mode: base
+Running Simulations: louvo - Mode: base
+../games/louvo/library/forces/force_record_base.json
+json force path: ../games/louvo/library/forces/force_record_base.json
+
+Creating wincap Fence
+
+
+Creating 0 Fence
+
+
+Creating freegame Fence
+
+Creating Initial Random Distributions...
+Combining Criteria Distributions....
+
+Creating basegame Fence
+
+Creating Initial Random Distributions...
+Combining Criteria Distributions....
+Creating Initial Distributions
+Thread 0: 50% done
+Thread 0: 100% done
+Printing info for Distribution 1
+Printing info for Distribution 6
+Printing info for Distribution 2
+Printing info for Distribution 7
+Printing info for Distribution 8
+Printing info for Distribution 3
+Printing info for Distribution 9
+Printing info for Distribution 4
+Printing info for Distribution 10
+Printing info for Distribution 5
+time taken 801ms
+
+[base] succeeded on attempt 3
+Running optimization for mode: bonus_speed_dating
+Running Simulations: louvo - Mode: bonus_speed_dating
+../games/louvo/library/forces/force_record_bonus_speed_dating.json
+json force path: ../games/louvo/library/forces/force_record_bonus_speed_dating.json
+
+Creating freegame Fence
+
+Creating Initial Random Distributions...
+Combining Criteria Distributions....
+Creating Initial Distributions
+Thread 0: 50% done
+Thread 0: 100% done
+Printing info for Distribution 1
+Printing info for Distribution 6
+Printing info for Distribution 2
+Printing info for Distribution 7
+Printing info for Distribution 3
+Printing info for Distribution 8
+Printing info for Distribution 4
+Printing info for Distribution 9
+Printing info for Distribution 5
+Printing info for Distribution 10
+time taken 297ms
+
+[bonus_speed_dating] succeeded
+Running optimization for mode: bonus_after_dark
+Running Simulations: louvo - Mode: bonus_after_dark
+../games/louvo/library/forces/force_record_bonus_after_dark.json
+json force path: ../games/louvo/library/forces/force_record_bonus_after_dark.json
+
+Creating freegame Fence
+
+Creating Initial Random Distributions...
+Combining Criteria Distributions....
+Creating Initial Distributions
+Thread 0: 50% done
+Thread 0: 100% done
+Printing info for Distribution 1
+Printing info for Distribution 6
+Printing info for Distribution 7
+Printing info for Distribution 2
+Printing info for Distribution 3
+Printing info for Distribution 8
+Printing info for Distribution 4
+Printing info for Distribution 9
+Printing info for Distribution 5
+Printing info for Distribution 10
+time taken 301ms
+
+[bonus_after_dark] succeeded
+Running optimization for mode: match_boost
+[match_boost] attempt 1/25 failed (Command '['cargo', 'run', '--release']' returned non-zero exit status 101.)
+Running optimization for mode: match_boost
+[match_boost] attempt 2/25 failed (Command '['cargo', 'run', '--release']' returned non-zero exit status 101.)
+Running optimization for mode: match_boost
+[match_boost] attempt 3/25 failed (Command '['cargo', 'run', '--release']' returned non-zero exit status 101.)
+Running optimization for mode: match_boost
+Running Simulations: louvo - Mode: match_boost
+../games/louvo/library/forces/force_record_match_boost.json
+json force path: ../games/louvo/library/forces/force_record_match_boost.json
+
+Creating wincap Fence
+
+
+Creating 0 Fence
+
+
+Creating freegame Fence
+
+Creating Initial Random Distributions...
+Combining Criteria Distributions....
+
+Creating basegame Fence
+
+Creating Initial Random Distributions...
+Combining Criteria Distributions....
+Creating Initial Distributions
+Thread 0: 50% done
+Thread 0: 100% done
+Printing info for Distribution 1
+Printing info for Distribution 6
+Printing info for Distribution 2
+Printing info for Distribution 7
+Printing info for Distribution 8
+Printing info for Distribution 3
+Printing info for Distribution 9
+Printing info for Distribution 4
+Printing info for Distribution 10
+Printing info for Distribution 5
+time taken 861ms
+
+[match_boost] succeeded on attempt 4
+Running optimization for mode: match_frenzy
+Running Simulations: louvo - Mode: match_frenzy
+../games/louvo/library/forces/force_record_match_frenzy.json
+json force path: ../games/louvo/library/forces/force_record_match_frenzy.json
+
+Creating wincap Fence
+
+
+Creating 0 Fence
+
+
+Creating basegame Fence
+
+Creating Initial Random Distributions...
+Combining Criteria Distributions....
+Creating Initial Distributions
+Thread 0: 50% done
+Thread 0: 100% done
+Printing info for Distribution 1
+Printing info for Distribution 6
+Printing info for Distribution 7
+Printing info for Distribution 2
+Printing info for Distribution 8
+Printing info for Distribution 3
+Printing info for Distribution 4
+Printing info for Distribution 9
+Printing info for Distribution 5
+Printing info for Distribution 10
+time taken 199ms
+
+[match_frenzy] succeeded
+Running optimization for mode: like_storm
+Running Simulations: louvo - Mode: like_storm
+../games/louvo/library/forces/force_record_like_storm.json
+json force path: ../games/louvo/library/forces/force_record_like_storm.json
+
+Creating wincap Fence
+
+
+Creating 0 Fence
+
+
+Creating basegame Fence
+
+Creating Initial Random Distributions...
+Combining Criteria Distributions....
+Creating Initial Distributions
+Thread 0: 50% done
+Thread 0: 100% done
+Printing info for Distribution 1
+Printing info for Distribution 6
+Printing info for Distribution 7
+Printing info for Distribution 2
+Printing info for Distribution 8
+Printing info for Distribution 3
+Printing info for Distribution 4
+Printing info for Distribution 9
+Printing info for Distribution 5
+Printing info for Distribution 10
+time taken 204ms
+
+[like_storm] succeeded
+
+=== All modes optimized successfully! ===
+
+Successfully loaded PAR-sheet information.
+[FALLBACK] No verification sidecar for base, reading books...
+[FALLBACK] No verification sidecar for bonus_speed_dating, reading books...
+[FALLBACK] No verification sidecar for bonus_after_dark, reading books...
+/workspaces/math-sdk/utils/rgs_verification.py:188: UserWarning: 
+Mode [bonus_after_dark] fails 3-star volatility limits:
+
+  warnings.warn(f"\nMode [{name}] fails 3-star volatility limits:\n")
+	VIOLATED: etl40b  VALUE:6.796 --- LIMIT: 0.9
+	VIOLATED: etl10k  VALUE:5.672 --- LIMIT: 0.8
+
+
+
+[FALLBACK] No verification sidecar for match_boost, reading books...
+/workspaces/math-sdk/utils/rgs_verification.py:188: UserWarning: 
+Mode [match_boost] fails 3-star volatility limits:
+
+  warnings.warn(f"\nMode [{name}] fails 3-star volatility limits:\n")
+	VIOLATED: etl40b  VALUE:1.8114 --- LIMIT: 0.9
+
+
+
+[FALLBACK] No verification sidecar for match_frenzy, reading books...
+[FALLBACK] No verification sidecar for like_storm, reading books...
+Checking compression setting...
+Compression is enabled, skipping formatting.
